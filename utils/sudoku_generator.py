@@ -90,10 +90,10 @@ def gen():
     ]
 
     iterator = 0
-    while iterator < 30:
+    while iterator < 25:
         i = random.randrange(0, n)
         j = random.randrange(0, n)
-        if mask[i][j] == 0 and sum(mask[i]) < n and sum(mask[:][j]) < n:
+        if mask[i][j] == 0 and sum(mask[i]) < n - 2 and sum(mask[:][j]) < n - 2:
             iterator += 1
 
             mask[i][j] = 1

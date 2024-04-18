@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from utils import solver, sudoku_generator
+from utils import sudoku_generator
 
 
 class Widget(QWidget):
@@ -85,6 +85,7 @@ class Widget(QWidget):
         y = pos.y() // self.cell_size
 
         # Нельзя изменять дефолтную ячейку
+        has_empty_cell = False
         try:
             if not self.def_num_matrix[x][y]:
                 if event.button() == Qt.LeftButton:
@@ -104,6 +105,8 @@ class Widget(QWidget):
                         num = self.matrix[i][j]
                         if num:
                             num_by_indexes[num].append((i, j))
+                        else:
+                            has_empty_cell = True
 
                     for k, v in num_by_indexes.items():
                         if len(v) > 1:
@@ -117,6 +120,8 @@ class Widget(QWidget):
                         num = self.matrix[j][i]
                         if num:
                             num_by_indexes[num].append((j, i))
+                        else:
+                            has_empty_cell = True
 
                     for k, v in num_by_indexes.items():
                         if len(v) > 1:
@@ -143,11 +148,9 @@ class Widget(QWidget):
 
                 self.update()
 
-                # Получим список решения этой судоку
-                for solution in self.sudoku_solutions:
-                    if solution == self.matrix:
-                        QMessageBox.information(self, 'Победа', 'Судоку решена!')
-                        break
+                # Проверим решение судоку
+                if not has_empty_cell and not self.invalid_indexes:
+                    QMessageBox.information(self, 'Победа', 'Судоку решена!')
 
         except IndexError:
             pass
