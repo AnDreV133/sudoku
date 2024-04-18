@@ -1,13 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-__author__ = 'denisbalyko'
-
-# Взято и портировано: http://habrahabr.ru/post/192102/
-
 import random
-
-from utils import solver
 
 
 class grid:
@@ -91,35 +82,21 @@ def gen():
     example = grid()
     example.mix()
 
+    n = example.n * example.n
+
     mask = [
-        [0 for _ in range(example.n * example.n)]
-        for _ in range(example.n * example.n)
+        [0 for _ in range(n)]
+        for _ in range(n)
     ]
 
-    difficult = example.n ** 4
-
-    iterator = example.n ** 4 - 30
-
-    while iterator < example.n ** 4:
-        i = random.randrange(0, example.n * example.n)
-        j = random.randrange(0, example.n * example.n)
-        if mask[i][j] == 0:
+    iterator = 0
+    while iterator < 30:
+        i = random.randrange(0, n)
+        j = random.randrange(0, n)
+        if mask[i][j] == 0 and sum(mask[i]) < n and sum(mask[:][j]) < n:
             iterator += 1
+
             mask[i][j] = 1
-
             example.table[i][j] = 0
-            difficult -= 1  # Усложняем если убрали элемент
-
-            table_solution = []
-            for copy_i in range(0, example.n * example.n):
-                table_solution.append(example.table[copy_i][:])  # Скопируем в отдельный список
-
-            i_solution = 0
-            for _ in solver.solve_sudoku((example.n, example.n), table_solution):
-                i_solution += 1  # Считаем количество решений
-
-            if i_solution != 1:  # Если решение не одинственное вернуть всё обратно
-                example.table[i][j] = 1
-                difficult += 1  # Облегчаем
 
     return example.table, (example.n, example.n)

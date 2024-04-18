@@ -81,7 +81,8 @@ class Widget(QWidget):
         super().mouseReleaseEvent(event)
 
         pos = event.pos()
-        x, y = pos.x() // self.cell_size, pos.y() // self.cell_size
+        x = pos.x() // self.cell_size
+        y = pos.y() // self.cell_size
 
         # Нельзя изменять дефолтную ячейку
         try:
