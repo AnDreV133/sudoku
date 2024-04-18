@@ -1,27 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-__author__ = 'ipetrash'
-
-
 from collections import defaultdict
 import copy
 import sys
 
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtGui import *
-
-except:
-    try:
-        from PyQt4.QtGui import *
-        from PyQt4.QtCore import *
-
-    except:
-        from PySide.QtGui import *
-        from PySide.QtCore import *
-
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 from utils import solver, sudoku_generator
 
@@ -31,22 +14,18 @@ class Widget(QWidget):
         super().__init__()
 
         self.setWindowTitle('Sudoku')
-
-        # Пусть будет 20, все-равно после первого события resizeEvent значение изменится
-        self.cell_size = 20
-        self.matrix_size = 9
-        self.sub_matrix_size = 3
-
-        self.x_highlight_cell = -1
-        self.y_highlight_cell = -1
-
         self.setMouseTracking(True)
 
+        self.cell_size = 20
         self.default_size = 300
-
         self.default_pen_size_1 = 1.0
         self.default_pen_size_2 = 5.0
         self.min_default_pen_size_2 = 2.0
+
+        self.matrix_size = 9
+        self.sub_matrix_size = 3
+        self.x_highlight_cell = -1
+        self.y_highlight_cell = -1
 
         self.resize(self.default_size, self.default_size)
 
@@ -54,9 +33,8 @@ class Widget(QWidget):
         self.sudoku_size = None
         self.orig_matrix = None
         self.def_num_matrix = None
-        self.sudoku_solutions = None
+        # self.sudoku_solutions = None
 
-        # Список хранит индексы с неправильными значениями. Например, когда одинаковые значения на линии
         self.invalid_indexes = []
 
         self.new_sudoku()
@@ -75,7 +53,7 @@ class Widget(QWidget):
         ]
 
         # Получим список решения этой судоку
-        self.sudoku_solutions = list(solver.solve_sudoku(self.sudoku_size, copy.deepcopy(self.orig_matrix)))
+        # self.sudoku_solutions = list(solver.solve_sudoku(self.sudoku_size, copy.deepcopy(self.orig_matrix)))
 
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
@@ -167,7 +145,7 @@ class Widget(QWidget):
                 # Получим список решения этой судоку
                 for solution in self.sudoku_solutions:
                     if solution == self.matrix:
-                        QMessageBox.information(self, 'Победа', 'Совпало, мать его!')
+                        QMessageBox.information(self, 'Победа', 'Судоку решена!')
                         break
 
         except IndexError:
@@ -198,26 +176,6 @@ class Widget(QWidget):
         # TODO: Закомментировано
         # Если индекс ячейки под курсором валидный
         if 0 <= self.x_highlight_cell < self.matrix_size and 0 <= self.y_highlight_cell < self.matrix_size:
-            # # Выделение всего столбца и строки пересекающих ячейку под курсором
-            # painter.save()
-            # painter.setBrush(Qt.lightGray)
-            #
-            # # Выделение строки
-            # for i in range(self.matrix_size):
-            #     painter.drawRect(i * self.cell_size,
-            #                      self.y_highlight_cell * self.cell_size,
-            #                      self.cell_size,
-            #                      self.cell_size)
-            #
-            # # Выделение столбца
-            # for j in range(self.matrix_size):
-            #     painter.drawRect(self.x_highlight_cell * self.cell_size,
-            #                      j * self.cell_size,
-            #                      self.cell_size,
-            #                      self.cell_size)
-            #
-            # painter.restore()
-
             x, y = self.x_highlight_cell, self.y_highlight_cell
 
             # Не подсвечиваем дефолтную ячейку
